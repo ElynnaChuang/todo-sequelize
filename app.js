@@ -16,7 +16,8 @@ app.use(methodOverride('_method'))
 
 // ======== 路由 ======== //
 app.get('/', (req, res) => {
-  res.send('hello world')
+  return Todo.findAll({ raw: true, nest: true })
+    .then((todos) => res.render('index', { todos }))
 })
 
 // ======== 登入 ======== //
