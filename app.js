@@ -44,8 +44,29 @@ app.get('/users/register', (req, res) => {
 
 app.post('/users/register', (req, res) => {
   const { name, email, password, confirmPassword } = req.body
-  User.create({ name, email, password, confirmPassword })
-    .then(() => res.redirect('/'))
+  User.findOne({ where: { email } })
+    .then(user => {
+      //User已存在
+      if(user) {
+        console.log('User already exists!')
+        return res.render('register', { name, email, password, confirmPassword })
+      }
+      //確認密碼不同
+      if(password !== confirmPassword) {
+        console.log('Confirm password is not match password!')
+        return res.render('register', { name, email, password, confirmPassword })
+      }
+
+      //通過
+      return bcrypt.genSalt(10)
+        .then(salt => bcrypt.hash(password, salt))
+        .then(hash => User.create({ name, email, password: hash }))
+        .then(() => res.redirect('/'))
+        .catch(err => {
+          res.render('error', { err })
+          console.log(err)
+        })
+    })
 })
 
 // ======== 登出 ======== //
