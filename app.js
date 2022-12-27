@@ -14,10 +14,18 @@ app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
-// ======== 路由 ======== //
+// ======== 首頁 ======== //
 app.get('/', (req, res) => {
   return Todo.findAll({ raw: true, nest: true })
     .then((todos) => res.render('index', { todos }))
+})
+
+// ======== 詳細頁 ======== //
+app.get('/todos/:id', (req, res) => {
+  const id = req.params.id
+  return Todo.findByPk(id)
+    .then(todo => res.render('detail', { todo: todo.toJSON() }))
+
 })
 
 // ======== 登入 ======== //
