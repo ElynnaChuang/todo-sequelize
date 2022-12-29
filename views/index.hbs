@@ -3,10 +3,10 @@
   {{#each todos}}
   <li class="list-group-item">
     <div class="row">
-      <div class="col-auto me-auto">
+      <div class="col-auto me-auto d-flex align-items-center">
         <input class="align-middle" type="checkbox" name="isDone" {{#if this.isDone }} checked {{/if}}
     disabled>
-        <h4 class="d-inline ms-2 align-middle">
+        <h4 class="ms-2 my-auto">
           {{ this.name }}
         </h4>
       </div>

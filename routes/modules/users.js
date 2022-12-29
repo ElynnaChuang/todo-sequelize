@@ -26,16 +26,15 @@ router.post('/register', (req, res) => {
   const { name, email, password, confirmPassword } = req.body
   User.findOne({ where: { email } })
     .then(user => {
+      const error_msg = []
+      //有空輸入欄
+      if(!name || !email || !password || !confirmPassword) error_msg.push({ message: 'All fields are required.'})
       //User已存在
-      if(user) {
-        console.log('User already exists!')
-        return res.render('register', { name, email, password, confirmPassword })
-      }
+      if(user) error_msg.push({ message: 'User already exists.'})
       //確認密碼不同
-      if(password !== confirmPassword) {
-        console.log('Confirm password is not match password!')
-        return res.render('register', { name, email, password, confirmPassword })
-      }
+      if(password !== confirmPassword) error_msg.push({ message: 'Confirm password is not match password.'})
+
+      if( error_msg.length ) return res.render('register', { name, email, password, confirmPassword, error_msg })
 
       //通過
       return bcrypt.genSalt(10)
@@ -52,6 +51,7 @@ router.post('/register', (req, res) => {
 // ======== 登出 ======== //
 router.get('/logout', (req, res) => {
   req.logout()
+  req.flash('success_msg', '已成功登出')
   res.redirect('/users/login')
 })
 
