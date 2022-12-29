@@ -31,4 +31,22 @@ router.get('/:id', (req, res) => {
     })
 })
 
+// ======== U 更新todo ======== //
+router.get('/:id/edit', (req, res) => {
+  const id = req.params.id
+  return Todo.findByPk(id)
+    .then(todo => res.render('edit', { todo: todo.toJSON() }))
+    .catch((err) => {
+      console.log(err)
+      res.render('error', { err })
+    })
+})
+
+router.put('/:id', (req, res) => {
+  const id = req.params.id
+  const { name, isDone } = req.body
+  return Todo.update({ name, isDone: (isDone==='on') }, { where: { id } })
+    .then( () => res.redirect('/'))
+})
+
 module.exports = router
