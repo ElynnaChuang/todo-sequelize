@@ -5,6 +5,8 @@ const methodOverride = require('method-override')
 const passport = require('passport') //登入時驗證要用 passport.authenticate
 const bcrypt = require('bcryptjs')
 const usePassport = require('./config/passport')
+const { authenticate } = require('./middleware/authenticate')
+
 const app = express()
 const PORT = 3000
 
@@ -23,15 +25,20 @@ app.use(session({
 }))
 
 usePassport(app)
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.user = req.user
+  next()
+})
 
 // ======== 首頁 ======== //
-app.get('/', (req, res) => {
+app.get('/', authenticate, (req, res) => {
   return Todo.findAll({ raw: true, nest: true })
     .then((todos) => res.render('index', { todos }))
 })
 
 // ======== 詳細頁 ======== //
-app.get('/todos/:id', (req, res) => {
+app.get('/todos/:id', authenticate, (req, res) => {
   const id = req.params.id
   return Todo.findByPk(id)
     .then(todo => res.render('detail', { todo: todo.toJSON() }))
