@@ -47,6 +47,21 @@ router.put('/:id', (req, res) => {
   const { name, isDone } = req.body
   return Todo.update({ name, isDone: (isDone==='on') }, { where: { id } })
     .then( () => res.redirect('/'))
+    .catch((err) => {
+      console.log(err)
+      res.render('error', { err })
+    })
+})
+
+// ======== D 刪除todo ======== //
+router.delete('/:id', (req, res) => {
+  const id = req.params.id
+  Todo.destroy({ where: { id } })
+    .then(() => res.redirect('/'))
+    .catch((err) => {
+      console.log(err)
+      res.render('error', { err })
+    })
 })
 
 module.exports = router
