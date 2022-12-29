@@ -6,7 +6,8 @@ const Todo = db.Todo
 
 // ======== 首頁 ======== //
 router.get('/', (req, res) => {
-  return Todo.findAll({ raw: true, nest: true })
+  const userId = req.user.id
+  return Todo.findAll({ raw: true, nest: true, where: { UserId: userId } })
     .then((todos) => res.render('index', { todos }))
 })
 
