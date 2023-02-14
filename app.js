@@ -1,12 +1,16 @@
 //環境
 const express = require('express')
-const app = express()
-const PORT = 3000
 //插件
 const exphbs = require('express-handlebars')
 const session = require('express-session')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+const app = express()
+const PORT = process.env.PORT
 
 //檔案
 const usePassport = require('./config/passport')
@@ -39,5 +43,5 @@ app.use(routes)
 
 // ======== 監聽 ======== //
 app.listen(PORT, () => {
-  console.log(`App is running on http://localhost:${PORT}`)
+  console.log(`App is running on https://localhost:${PORT}`)
 })
